@@ -1,6 +1,6 @@
 import express from "express";
 import cookieParser from "cookie-parser";
-import cors from "cors";
+import cors, { CorsOptions } from "cors";
 import healthRoutes from "./routes/health.routes";
 import authRouter from "./routes/auth.routes";
 import urlRouter from "./routes/url.routes";
@@ -14,18 +14,18 @@ const allowedOrigins = [
 	process.env.FRONTEND_URL,
 ].filter((origin): origin is string => Boolean(origin));
 
-app.use(
-	cors({
-		origin: (origin, callback) => {
-			if (!origin || allowedOrigins.includes(origin)) {
-				callback(null, true);
-			} else {
-				callback(new Error("Not allowed by CORS"));
-			}
-		},
-		credentials: true,
-	})
-);
+const corsOptions: CorsOptions = {
+	origin: (origin, callback) => {
+		if (!origin || allowedOrigins.includes(origin)) {
+			callback(null, true);
+		} else {
+			callback(new Error("Not allowed by CORS"));
+		}
+	},
+	credentials: true,
+};
+
+app.use(cors(corsOptions));
 
 app.use(express.json());
 app.use(cookieParser());
