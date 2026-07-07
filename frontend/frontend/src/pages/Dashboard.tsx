@@ -23,6 +23,7 @@ interface DashboardProps {
 }
 
 function Dashboard({ setIsLoggedIn }: DashboardProps) {
+	const backendBaseUrl = import.meta.env.VITE_BACKEND_BASE_URL;
 	const [originalUrl, setOriginalUrl] = useState("");
 	const [shortCode, setShortCode] = useState("");
 	const [message, setMessage] = useState("");
@@ -67,7 +68,7 @@ function Dashboard({ setIsLoggedIn }: DashboardProps) {
 	};
 
 	const copyToClipboard = async (shortCode: string) => {
-		const shortUrl = `http://localhost:3000/${shortCode}`;
+		const shortUrl = `${backendBaseUrl}/${shortCode}`;
 		try {
 			await navigator.clipboard.writeText(shortUrl);
 			setMessage("Short URL copied to clipboard");
@@ -129,11 +130,11 @@ function Dashboard({ setIsLoggedIn }: DashboardProps) {
 						<p>Short URL:</p>
 						<div className="actions">
 							<a
-								href={`http://localhost:3000/${shortCode}`}
+								href={`${backendBaseUrl}/${shortCode}`}
 								target="_blank"
 								rel="noreferrer"
 							>
-								http://localhost:3000/{shortCode}
+								{backendBaseUrl}/{shortCode}
 							</a>
 							<button type="button" onClick={() => copyToClipboard(shortCode)}>
 								Copy
@@ -171,11 +172,11 @@ function Dashboard({ setIsLoggedIn }: DashboardProps) {
 										<td className="url-cell">{url.originalUrl}</td>
 										<td>
 											<a
-												href={`http://localhost:3000/${url.shortCode}`}
+												href={`${backendBaseUrl}/${url.shortCode}`}
 												target="_blank"
 												rel="noreferrer"
 											>
-												http://localhost:3000/{url.shortCode}
+												{backendBaseUrl}/{url.shortCode}
 											</a>
 										</td>
 										<td>{url.clicks}</td>
