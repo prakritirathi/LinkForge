@@ -1,5 +1,6 @@
 import express from "express";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 import healthRoutes from "./routes/health.routes";
 import authRouter from "./routes/auth.routes";
 import urlRouter from "./routes/url.routes";
@@ -8,12 +9,20 @@ import { redirectUrl } from "./controllers/url.controller";
 
 const app = express();
 
+app.use(
+	cors({
+		origin: "http://localhost:5173",
+		credentials: true,
+	})
+);
+
 app.use(express.json());
 app.use(cookieParser());
 
 app.use("/health", healthRoutes);
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/url", urlRouter);
+
 app.get("/:shortCode", redirectUrl);
 
 app.use(errorMiddleware);
