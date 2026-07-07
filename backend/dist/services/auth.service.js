@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.login = exports.signup = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const user_repository_1 = require("../repositories/user.repository");
+const jwt_1 = require("../utils/jwt");
 const signup = async (userData) => {
     const existingUser = await (0, user_repository_1.findUserByEmail)(userData.email);
     if (existingUser) {
@@ -42,11 +43,16 @@ const login = async (credentials) => {
             message: "Invalid credentials",
         };
     }
-    const { password, ...safeUser } = user;
+    const token = (0, jwt_1.generateToken)(user.id);
     return {
         success: true,
         message: "Login successful",
-        user: safeUser,
+        token,
+        user: {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+        },
     };
 };
 exports.login = login;

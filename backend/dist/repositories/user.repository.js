@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.findUserByEmail = exports.createUser = void 0;
+exports.findUserById = exports.findUserByEmail = exports.createUser = void 0;
 const prisma_1 = __importDefault(require("../lib/prisma"));
 const createUser = async (userData) => {
     const user = await prisma_1.default.user.create({
@@ -24,3 +24,11 @@ const findUserByEmail = async (email) => {
     });
 };
 exports.findUserByEmail = findUserByEmail;
+const findUserById = async (id) => {
+    return await prisma_1.default.user.findUnique({
+        where: {
+            id,
+        },
+    });
+};
+exports.findUserById = findUserById;
