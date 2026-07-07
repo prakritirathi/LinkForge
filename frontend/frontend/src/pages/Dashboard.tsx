@@ -1,4 +1,4 @@
-import { useState, type Dispatch, type FormEvent, type SetStateAction } from "react";
+import { useEffect, useState, type Dispatch, type FormEvent, type SetStateAction } from "react";
 import api from "../api/axios";
 
 interface UrlHistoryItem {
@@ -28,6 +28,10 @@ function Dashboard({ setIsLoggedIn }: DashboardProps) {
 	const [message, setMessage] = useState("");
 	const [history, setHistory] = useState<UrlHistoryItem[]>([]);
 	const [stats, setStats] = useState<UrlStats | null>(null);
+
+	useEffect(() => {
+		fetchHistory();
+	}, []);
 
 	const fetchHistory = async () => {
 		try {
@@ -100,80 +104,100 @@ function Dashboard({ setIsLoggedIn }: DashboardProps) {
 
 	return (
 		<div>
-			<h2>Dashboard</h2>
-			<button type="button" onClick={handleLogout}>
-				Logout
-			</button>
-			<form onSubmit={handleCreateUrl}>
-				<input
-					type="url"
-					value={originalUrl}
-					onChange={(e) => setOriginalUrl(e.target.value)}
-					placeholder="Enter long URL"
-				/>
-				<button type="submit">Shorten URL</button>
-			</form>
-			<button type="button" onClick={fetchHistory}>
-				Load History
-			</button>
-			{message && <p>{message}</p>}
-			{shortCode && (
+			<div className="header">
 				<div>
-					<p>Short URL:</p>
-					<a
-						href={`http://localhost:3000/${shortCode}`}
-						target="_blank"
-						rel="noreferrer"
-					>
-						http://localhost:3000/{shortCode}
-					</a>
-					<button type="button" onClick={() => copyToClipboard(shortCode)}>
-						Copy
+					<h2>Dashboard</h2>
+					<p>Create and manage your shortened links.</p>
+				</div>
+				<button type="button" onClick={handleLogout}>
+					Logout
+				</button>
+			</div>
+			<div className="card">
+				<h3>Create Short URL</h3>
+				<form onSubmit={handleCreateUrl} className="url-form">
+					<input
+						type="url"
+						value={originalUrl}
+						onChange={(e) => setOriginalUrl(e.target.value)}
+						placeholder="Enter long URL"
+					/>
+					<button type="submit">Shorten URL</button>
+				</form>
+				{shortCode && (
+					<div className="short-url-box">
+						<p>Short URL:</p>
+						<div className="actions">
+							<a
+								href={`http://localhost:3000/${shortCode}`}
+								target="_blank"
+								rel="noreferrer"
+							>
+								http://localhost:3000/{shortCode}
+							</a>
+							<button type="button" onClick={() => copyToClipboard(shortCode)}>
+								Copy
+							</button>
+						</div>
+					</div>
+				)}
+				{message && <p className="message">{message}</p>}
+			</div>
+			<div className="card">
+				<div className="header">
+					<div>
+						<h3>URL History</h3>
+						<p>View your created links and click counts.</p>
+					</div>
+					<button type="button" onClick={fetchHistory}>
+						Load History
 					</button>
 				</div>
-			)}
-			{history.length > 0 && (
-				<table>
-					<thead>
-						<tr>
-							<th>Original URL</th>
-							<th>Short URL</th>
-							<th>Clicks</th>
-							<th>Action</th>
-							<th>Stats</th>
-						</tr>
-					</thead>
-					<tbody>
-						{history.map((url) => (
-							<tr key={url.shortCode}>
-								<td>{url.originalUrl}</td>
-								<td>
-									<a
-										href={`http://localhost:3000/${url.shortCode}`}
-										target="_blank"
-										rel="noreferrer"
-									>
-										http://localhost:3000/{url.shortCode}
-									</a>
-								</td>
-								<td>{url.clicks}</td>
-								<td>
-									<button type="button" onClick={() => copyToClipboard(url.shortCode)}>
-										Copy
-									</button>
-								</td>
-								<td>
-									<button type="button" onClick={() => fetchStats(url.shortCode)}>
-										Stats
-									</button>
-								</td>
-							</tr>
-						))}
-					</tbody>
-				</table>
-			)}
+				{history.length > 0 && (
+					<div className="table-wrapper">
+						<table>
+							<thead>
+								<tr>
+									<th>Original URL</th>
+									<th>Short URL</th>
+									<th>Clicks</th>
+									<th>Action</th>
+									<th>Stats</th>
+								</tr>
+							</thead>
+							<tbody>
+								{history.map((url) => (
+									<tr key={url.shortCode}>
+										<td className="url-cell">{url.originalUrl}</td>
+										<td>
+											<a
+												href={`http://localhost:3000/${url.shortCode}`}
+												target="_blank"
+												rel="noreferrer"
+											>
+												http://localhost:3000/{url.shortCode}
+											</a>
+										</td>
+										<td>{url.clicks}</td>
+										<td>
+											<button type="button" onClick={() => copyToClipboard(url.shortCode)}>
+												Copy
+											</button>
+										</td>
+										<td>
+											<button type="button" onClick={() => fetchStats(url.shortCode)}>
+												Stats
+											</button>
+										</td>
+									</tr>
+								))}
+							</tbody>
+						</table>
+					</div>
+				)}
+			</div>
 			{stats && (
-				<div>
+				<div className="card">
 					<h3>URL Stats</h3>
 					<p>Short Code: {stats.shortCode}</p>
 					<p>Original URL: {stats.originalUrl}</p>

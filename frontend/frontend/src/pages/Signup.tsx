@@ -10,13 +10,21 @@ function Signup() {
 	const handleSignup = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
+		if (!name.trim() || !email.trim() || !password.trim()) {
+			setMessage("Name, email, and password are required.");
+			return;
+		}
+
 		try {
-			const response = await api.post("/auth/signup", {
+			await api.post("/auth/signup", {
 				name,
 				email,
 				password,
 			});
-			setMessage(response.data.message || "Signup successful");
+			setMessage("Account created successfully. Please login.");
+			setName("");
+			setEmail("");
+			setPassword("");
 		} catch (error: any) {
 			setMessage(error.response?.data?.message || "Signup failed");
 		}
@@ -29,6 +37,7 @@ function Signup() {
 				<div>
 					<label>Name</label>
 					<input
+						required
 						type="text"
 						value={name}
 						onChange={(e) => setName(e.target.value)}
@@ -38,6 +47,7 @@ function Signup() {
 				<div>
 					<label>Email</label>
 					<input
+						required
 						type="email"
 						value={email}
 						onChange={(e) => setEmail(e.target.value)}
@@ -47,6 +57,7 @@ function Signup() {
 				<div>
 					<label>Password</label>
 					<input
+						required
 						type="password"
 						value={password}
 						onChange={(e) => setPassword(e.target.value)}

@@ -3,6 +3,13 @@ import { createUser, findUserByEmail } from "../repositories/user.repository";
 import { LoginDto, SignupDto } from "../types/auth.types";
 import { generateToken } from "../utils/jwt";
 export const signup = async (userData: SignupDto) => {
+    if (!userData.name?.trim() || !userData.email?.trim() || !userData.password?.trim()) {
+        return {
+            success: false,
+            message: "Name, email, and password are required",
+        };
+    }
+
     const existingUser = await findUserByEmail(userData.email);
 
     if (existingUser) {

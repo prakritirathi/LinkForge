@@ -9,6 +9,13 @@ import { findUserById } from "../repositories/user.repository";
 export const signup = asyncHandler(async (req: Request, res: Response) => {
   const { name, email, password } = req.body;
 
+  if (!name?.trim() || !email?.trim() || !password?.trim()) {
+    return res.status(400).json({
+      success: false,
+      message: "Name, email, and password are required",
+    });
+  }
+
   const result = await signupService({
     name,
     email,

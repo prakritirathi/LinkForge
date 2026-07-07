@@ -25,15 +25,6 @@ function Login({ setIsLoggedIn }: LoginProps) {
 		}
 	};
 
-	const checkCurrentUser = async () => {
-		try {
-			const response = await api.get("/auth/me");
-			setMessage(`Logged in as ${response.data.user.email}`);
-		} catch (error: any) {
-			setMessage(error.response?.data?.message || "Not authenticated");
-		}
-	};
-
 	return (
 		<div>
 			<h2>Login</h2>
@@ -58,9 +49,6 @@ function Login({ setIsLoggedIn }: LoginProps) {
 				</div>
 				<button type="submit">Login</button>
 			</form>
-			<button type="button" onClick={checkCurrentUser}>
-				Check Current User
-			</button>
 			{message && <p>{message}</p>}
 		</div>
 	);
