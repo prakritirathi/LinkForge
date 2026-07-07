@@ -6,6 +6,13 @@ import {
 } from "../services/auth.service";
 import { findUserById } from "../repositories/user.repository";
 
+const authCookieOptions = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: process.env.NODE_ENV === "production" ? ("none" as const) : ("lax" as const),
+  maxAge: 7 * 24 * 60 * 60 * 1000,
+};
+
 export const signup = asyncHandler(async (req: Request, res: Response) => {
   const { name, email, password } = req.body;
 
@@ -41,12 +48,7 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
     return res.status(401).json(result);
   }
 
-  res.cookie("token", result.token, {
-    httpOnly: true,
-    secure: false,
-    sameSite: "lax",
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-  });
+  res.cookie("token", result.token, authCookieOptions);
 
   return res.status(200).json({
     success: true,
@@ -83,11 +85,7 @@ export const getCurrentUser = asyncHandler(async (req: Request, res: Response) =
 });
 
 export const logout = asyncHandler(async (req: Request, res: Response) => {
-  res.clearCookie("token", {
-    httpOnly: true,
-    secure: false,
-    sameSite: "lax",
-  });
+  res.clearCookie("token", authCookieOptions);
 
   return res.status(200).json({
     success: true,
