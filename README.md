@@ -1,5 +1,10 @@
 # LinkForge
 
+## Live Demo
+
+Frontend: https://your-vercel-url.vercel.app  
+Backend Health Check: https://linkforge-ydpd.onrender.com/health
+
 LinkForge is a full-stack URL shortener application built with React, Node.js, Express, TypeScript, PostgreSQL, Prisma, and Redis.
 
 It allows users to create short links, redirect using short codes, track clicks, view URL history, and fetch analytics. The backend uses JWT authentication with HTTP-only cookies and Redis caching for faster redirects.
